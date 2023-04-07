@@ -78,12 +78,13 @@ variable "id_prefix" {
   type = string
   default = null
 }
-
+/*
 variable "db_vault_secret_path" {
   description = "Path to vault secrets"
   type = string
+  
 }
-
+*/
 
 
 variable "vpc_id"{
@@ -220,7 +221,9 @@ variable "create" {
 variable "identifier" {
   description = "The name of the RDS instance"
   type        = string
+  default = null
 }
+
 variable "custom_iam_instance_profile" {
   description = "RDS custom iam instance profile"
   type        = string
