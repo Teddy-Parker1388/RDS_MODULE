@@ -68,7 +68,7 @@ resource "aws_rds_cluster" "db_cluster" {
   master_password = var.master_password
   
   db_cluster_parameter_group_name = var.create_db_param ? aws_db_parameter_group.db_param[0].name : null
-  db_cluster_option_group_name = var.create_db_option ? aws_db_option_group.db_opt_grp[0].name : null
+  
 
   vpc_security_group_ids = [aws_security_group.rds_sec_group.id]
   db_subnet_group_name   = aws_db_subnet_group.db_subnet_group[0].name
@@ -110,7 +110,7 @@ resource "aws_rds_cluster_instance" "app_rds_instance" {
 #CREATING A DB INSTANCE
 
 resource "aws_db_parameter_group" "db_param" {
-  count = can(regex("aurora","${var.engine}")) == false && var.create_db_param ? 1 : 0
+  count = var.create_db_param ? 1 : 0
 
   name        = var.db_param_name
   name_prefix = var.db_param_name_prefix
