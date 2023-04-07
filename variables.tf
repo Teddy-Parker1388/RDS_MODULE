@@ -1,3 +1,10 @@
+variable "create_subnet_grp"{
+ description = "Specifies whether to create subnet group"
+ type = bool
+ default = false
+  
+}
+
 
 variable "rds_ingress" {
   description = "EFS Ingress Rules"
