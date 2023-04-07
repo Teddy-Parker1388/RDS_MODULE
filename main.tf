@@ -90,7 +90,7 @@ resource "aws_rds_cluster_instance" "app_rds_instance" {
   engine_version = var.engine_version
 
   instance_class       = var.db_instance_type
-  db_subnet_group_name = aws_db_subnet_group.db_subnet_group[0].name
+  db_subnet_group_name = var.create_subnet_grp ? aws_db_subnet_group.db_subnet_group[0].name : null
   db_parameter_group_name = var.create_db_param ? aws_db_parameter_group.db_param[0].name : null
   
 
