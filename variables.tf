@@ -84,10 +84,7 @@ variable "db_vault_secret_path" {
   type = string
 }
 
-variable "rds_security_group_id" {
-  description = "Security Group Id for EFS"
-  type        = string
-}
+
 
 variable "vpc_id"{
   description = "VPC ID"
