@@ -46,7 +46,7 @@ resource "aws_security_group" "rds_sec_group" {
 #CREATING RDS CLUSTER FOR AURORA-*
 
 resource "aws_db_subnet_group" "db_subnet_group" {
-  #count = can(regex("aurora",var.engine)) ? 1 : 0
+  count = can(regex("aurora",var.engine)) ? 1 : 0
   name       = "${var.id_prefix}-subnet-group-${var.app_env}"
   subnet_ids = data.aws_subnets.db_tier.ids
 
@@ -68,7 +68,7 @@ resource "aws_rds_cluster" "db_cluster" {
   master_password = var.master_password
 
   vpc_security_group_ids = [aws_security_group.rds_sec_group.id]
-  db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
+  db_subnet_group_name   = aws_db_subnet_group.db_subnet_group[*].name
 
   apply_immediately   = var.apply_immediately
   skip_final_snapshot = var.skip_final_snapshot
