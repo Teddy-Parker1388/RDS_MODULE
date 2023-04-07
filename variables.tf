@@ -317,7 +317,7 @@ variable "engine_version" {
 variable "instance_class" {
   description = "The instance type of the RDS instance"
   type        = string
-  default     = null
+  default     = "db.m3"
 }
 
 variable "db_name" {
