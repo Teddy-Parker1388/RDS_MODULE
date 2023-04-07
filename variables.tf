@@ -42,10 +42,7 @@ variable "master_password"{
     type = string
 }
 
-variable "engine" {
-  description = "Engine Description"
-  type = string
-}
+
 
 variable "database_name" {
   description = "Name of database"
@@ -53,33 +50,16 @@ variable "database_name" {
 
 }
 
-variable "engine_version" {
-  description = "TO_DO"
-  type = string
-}
 
-variable "apply_immediately" {
-  description = "TO_DO"
-  type = bool
-  default = true
-}
+
 
 variable "env_type" {
   description = "Environment type"
   type        = string
 }
 
-variable "skip_final_snapshot" {
-  description = "TO_DO"
-  type = bool
-  default = true
-}
 
-variable "deletion_protection" {
-  description = "TO_DO"
-  type = bool
-  default = true
-}
+
 
 variable "rds_tags" {
   description = "Tags"
