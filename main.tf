@@ -101,12 +101,6 @@ resource "aws_rds_cluster_instance" "app_rds_instance" {
 
 
 
-
-
-
-
-
-
 #CREATING A DB INSTANCE
 
 resource "aws_db_parameter_group" "db_param" {
