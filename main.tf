@@ -164,7 +164,7 @@ resource "aws_db_option_group" "db_opt_grp" {
 resource "aws_db_instance_automated_backups_replication" "this" {
   count = can(regex("aurora","${var.engine}")) == false && var.create_auto_backups ? 1 : 0
 
-  source_db_instance_arn = var.source_db_instance_arn
+  source_db_instance_arn = aws_db_instance.this[0].arn
   kms_key_id             = var.kms_key_arn
   pre_signed_url         = var.pre_signed_url
   retention_period       = var.retention_period
