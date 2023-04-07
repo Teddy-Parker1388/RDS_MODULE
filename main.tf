@@ -66,6 +66,9 @@ resource "aws_rds_cluster" "db_cluster" {
   database_name   = var.database_name
   master_username = var.master_username
   master_password = var.master_password
+  
+  db_cluster_parameter_group_name = var.create_db_param ? aws_db_parameter_group.db_param[0].name : null
+  db_cluster_option_group_name = var.create_db_option ? aws_db_option_group.db_opt_grp[0].name : null
 
   vpc_security_group_ids = [aws_security_group.rds_sec_group.id]
   db_subnet_group_name   = aws_db_subnet_group.db_subnet_group[0].name
@@ -89,7 +92,7 @@ resource "aws_rds_cluster_instance" "app_rds_instance" {
   instance_class       = var.db_instance_type
   db_subnet_group_name = aws_db_subnet_group.db_subnet_group[0].name
   db_parameter_group_name = var.create_db_param ? aws_db_parameter_group.db_param[0].name : null
-  db_option_group_name = var.create_db_option ? aws_db_option_group.db_opt_grp[0].name : null
+  
 
   apply_immediately = var.apply_immediately
 
