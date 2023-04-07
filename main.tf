@@ -46,7 +46,7 @@ resource "aws_security_group" "rds_sec_group" {
 #CREATING RDS CLUSTER FOR AURORA-*
 
 resource "aws_db_subnet_group" "db_subnet_group" {
-  count = can(regex("aurora",var.engine)) ? 1 : 0
+  count = var.create_subnet_grp ? 1 : 0
   name       = "${var.id_prefix}-subnet-group-${var.app_env}"
   subnet_ids = data.aws_subnets.db_tier.ids
 
@@ -161,7 +161,7 @@ resource "aws_db_option_group" "db_opt_grp" {
 
 
 resource "aws_db_instance_automated_backups_replication" "this" {
-  count = can(regex("aurora","${var.engine}")) == false && var.create_auto_backups ? 1 : 0
+  count = var.create_auto_backups ? 1 : 0
 
   source_db_instance_arn = can(regex("aurora","${var.engine}")) ? aws_rds_cluster_instance.app_rds_instance[0].arn : aws_db_instance.this[0].arn
   kms_key_id             = var.kms_key_arn
@@ -201,7 +201,7 @@ resource "aws_db_instance" "this" {
   custom_iam_instance_profile         = var.custom_iam_instance_profile
 
   vpc_security_group_ids = var.vpc_security_group_ids
-  db_subnet_group_name   = var.db_subnet_group_name
+  db_subnet_group_name   = var.create_subnet_grp ? aws_db_subnet_group.db_subnet_group[0].name : null
   parameter_group_name   = var.create_db_param ? aws_db_parameter_group.db_param[0].name : null
   option_group_name      = var.create_db_option ? aws_db_option_group.db_opt_grp[0].name : null
   network_type           = var.network_type
