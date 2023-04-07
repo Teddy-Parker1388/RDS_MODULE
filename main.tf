@@ -71,7 +71,7 @@ resource "aws_rds_cluster" "db_cluster" {
   
 
   vpc_security_group_ids = [aws_security_group.rds_sec_group.id]
-  db_subnet_group_name   = aws_db_subnet_group.db_subnet_group[0].name
+  db_subnet_group_name   = var.create_subnet_grp ? aws_db_subnet_group.db_subnet_group[0].name : null
 
   apply_immediately   = var.apply_immediately
   skip_final_snapshot = var.skip_final_snapshot
