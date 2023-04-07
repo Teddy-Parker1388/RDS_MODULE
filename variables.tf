@@ -103,6 +103,7 @@ variable "db_instance_type" {
 variable "family" {
   description = "DB Family"
   type = string
+  default = null
 }
 
 variable "params" {
