@@ -56,7 +56,7 @@ resource "aws_db_subnet_group" "db_subnet_group" {
 
 
 resource "aws_rds_cluster" "db_cluster" {
-  count = can(regex("aurora",var.engine)) ? 1 : 0
+  count = can(regex("aurora","${var.engine}")) ? 1 : 0
 
   cluster_identifier = "${var.id_prefix}-rds-cluster-${var.app_env}"
 
@@ -79,7 +79,7 @@ resource "aws_rds_cluster" "db_cluster" {
 
 
 resource "aws_rds_cluster_instance" "app_rds_instance" {
-  count = can(regex("aurora",var.engine)) ? 1 : 0
+  count = can(regex("aurora","${var.engine}"))  ? 1 : 0
   identifier         = "${var.id_prefix}-rds-instance-${var.app_env}"
   cluster_identifier = aws_rds_cluster.db_cluster[*].cluster_identifier
 
@@ -105,7 +105,7 @@ resource "aws_rds_cluster_instance" "app_rds_instance" {
 #CREATING A DB INSTANCE
 
 resource "aws_db_parameter_group" "db_param" {
-  count = can(regex("aurora",var.engine)) == false && var.create_db_param ? 1 : 0
+  count = can(regex("aurora","${var.engine}")) == false && var.create_db_param ? 1 : 0
 
   name        = var.db_param_name
   name_prefix = var.db_param_name_prefix
@@ -132,7 +132,7 @@ resource "aws_db_parameter_group" "db_param" {
 
 resource "aws_db_option_group" "db_opt_grp" {
 
-  count = can(regex("aurora",var.engine)) == false && var.create_db_option ? 1 : 0
+  count = can(regex("aurora","${var.engine}")) == false && var.create_db_option ? 1 : 0
 
   name                    = var.db_option_grp_name
   engine_name             = var.engine
@@ -162,7 +162,7 @@ resource "aws_db_option_group" "db_opt_grp" {
 
 
 resource "aws_db_instance_automated_backups_replication" "this" {
-  count = can(regex("aurora",var.engine)) == false && var.create_auto_backups ? 1 : 0
+  count = can(regex("aurora","${var.engine}")) == false && var.create_auto_backups ? 1 : 0
 
   source_db_instance_arn = var.source_db_instance_arn
   kms_key_id             = var.kms_key_arn
@@ -178,7 +178,7 @@ resource "aws_db_instance_automated_backups_replication" "this" {
 #STUFF TO DO TOMORROW
 
 resource "aws_db_instance" "this" {
-  count = can(regex("aurora",var.engine)) == false ? 1 : 0
+  count = can(regex("aurora","${var.engine}")) == false ? 1 : 0
 
   identifier        = var.identifier
   #identifier_prefix = var.identifier_prefix
