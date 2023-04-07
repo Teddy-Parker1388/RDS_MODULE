@@ -97,6 +97,7 @@ variable "vpc_id"{
 variable "db_instance_type" {
   description = "DB Instance Type"
   type = string
+  default = null
 }
 
 
