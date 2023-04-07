@@ -68,7 +68,7 @@ resource "aws_rds_cluster" "db_cluster" {
   master_password = var.master_password
 
   vpc_security_group_ids = [aws_security_group.rds_sec_group.id]
-  db_subnet_group_name   = aws_db_subnet_group.db_subnet_group[*].name
+  db_subnet_group_name   = aws_db_subnet_group.db_subnet_group[0].name
 
   apply_immediately   = var.apply_immediately
   skip_final_snapshot = var.skip_final_snapshot
@@ -81,13 +81,13 @@ resource "aws_rds_cluster" "db_cluster" {
 resource "aws_rds_cluster_instance" "app_rds_instance" {
   count = can(regex("aurora","${var.engine}"))  ? 1 : 0
   identifier         = "${var.id_prefix}-rds-instance-${var.app_env}"
-  cluster_identifier = aws_rds_cluster.db_cluster[*].cluster_identifier
+  cluster_identifier = aws_rds_cluster.db_cluster[0].cluster_identifier
 
   engine         = var.engine
   engine_version = var.engine_version
 
   instance_class       = var.db_instance_type
-  db_subnet_group_name = aws_db_subnet_group.db_subnet_group[*].name
+  db_subnet_group_name = aws_db_subnet_group.db_subnet_group[0].name
 
   apply_immediately = var.apply_immediately
 
