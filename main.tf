@@ -46,7 +46,7 @@ resource "aws_security_group" "rds_sec_group" {
 #CREATING RDS CLUSTER FOR AURORA-*
 
 resource "aws_db_subnet_group" "db_subnet_group" {
-  count = can(regex("aurora",var.engine)) ? 1 : 0
+  #count = can(regex("aurora",var.engine)) ? 1 : 0
   name       = "${var.id_prefix}-subnet-group-${var.app_env}"
   subnet_ids = data.aws_subnets.db_tier.ids
 
@@ -181,7 +181,7 @@ resource "aws_db_instance" "this" {
   count = can(regex("aurora",var.engine)) == false ? 1 : 0
 
   identifier        = var.identifier
-  identifier_prefix = var.identifier_prefix
+  #identifier_prefix = var.identifier_prefix
 
   engine            = var.engine
   engine_version    = var.engine_version
@@ -223,7 +223,7 @@ resource "aws_db_instance" "this" {
   snapshot_identifier       = var.snapshot_identifier
   copy_tags_to_snapshot     = var.copy_tags_to_snapshot
   skip_final_snapshot       = var.skip_final_snapshot
-  final_snapshot_identifier = local.final_snapshot_identifier
+  final_snapshot_identifier = var.final_snapshot_identifier
 
   performance_insights_enabled          = var.performance_insights_enabled
   performance_insights_retention_period = var.performance_insights_enabled ? var.performance_insights_retention_period : null
@@ -235,7 +235,7 @@ resource "aws_db_instance" "this" {
   backup_window           = var.backup_window
   max_allocated_storage   = var.max_allocated_storage
   monitoring_interval     = var.monitoring_interval
-  monitoring_role_arn     = var.monitoring_interval > 0 ? local.monitoring_role_arn : null
+  monitoring_role_arn     = var.monitoring_interval > 0 ? var.monitoring_role_arn : null
 
   character_set_name              = var.character_set_name
   timezone                        = var.timezone
@@ -270,7 +270,7 @@ resource "aws_db_instance" "this" {
 
   tags = var.tags
 
-  depends_on = [aws_cloudwatch_log_group.this]
+  #depends_on = [aws_cloudwatch_log_group.this]
 
   timeouts {
     create = lookup(var.timeouts, "create", null)
