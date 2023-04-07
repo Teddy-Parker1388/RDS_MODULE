@@ -81,7 +81,7 @@ resource "aws_rds_cluster" "db_cluster" {
 resource "aws_rds_cluster_instance" "app_rds_instance" {
   count = can(regex("aurora",var.engine)) ? 1 : 0
   identifier         = "${var.id_prefix}-rds-instance-${var.app_env}"
-  cluster_identifier = aws_rds_cluster.db_cluster.cluster_identifier
+  cluster_identifier = aws_rds_cluster.db_cluster[*].cluster_identifier
 
   engine         = var.engine
   engine_version = var.engine_version
