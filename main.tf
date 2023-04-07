@@ -88,6 +88,8 @@ resource "aws_rds_cluster_instance" "app_rds_instance" {
 
   instance_class       = var.db_instance_type
   db_subnet_group_name = aws_db_subnet_group.db_subnet_group[0].name
+  db_parameter_group_name = var.create_db_param ? aws_db_parameter_group.db_param[0].name : null
+  db_option_group_name = var.create_db_option ? aws_db_option_group.db_opt_grp[0].name : null
 
   apply_immediately = var.apply_immediately
 
@@ -203,8 +205,8 @@ resource "aws_db_instance" "this" {
 
   vpc_security_group_ids = var.vpc_security_group_ids
   db_subnet_group_name   = var.db_subnet_group_name
-  parameter_group_name   = var.parameter_group_name
-  option_group_name      = var.option_group_name
+  parameter_group_name   = var.create_db_param ? aws_db_parameter_group.db_param[0].name : null
+  option_group_name      = var.create_db_option ? aws_db_option_group.db_opt_grp[0].name : null
   network_type           = var.network_type
 
   availability_zone   = var.availability_zone
