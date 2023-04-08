@@ -67,11 +67,11 @@ resource "aws_rds_cluster" "db_cluster" {
   master_username = var.master_username
   master_password = var.master_password
   
-  db_cluster_parameter_group_name = var.create_db_param ? aws_db_parameter_group.db_param[0].name : null
+  db_cluster_parameter_group_name = var.create_db_param ? aws_db_parameter_group.db_param[count.index].name : null
   
 
   vpc_security_group_ids = [aws_security_group.rds_sec_group.id]
-  db_subnet_group_name   = var.create_subnet_grp ? aws_db_subnet_group.db_subnet_group[0].name : null
+  db_subnet_group_name   = var.create_subnet_grp ? aws_db_subnet_group.db_subnet_group[count.index].name : null
 
   apply_immediately   = var.apply_immediately
   skip_final_snapshot = var.skip_final_snapshot
@@ -90,8 +90,8 @@ resource "aws_rds_cluster_instance" "app_rds_instance" {
   engine_version = var.engine_version
 
   instance_class       = var.db_instance_type
-  db_subnet_group_name = var.create_subnet_grp ? aws_db_subnet_group.db_subnet_group[0].name : null
-  db_parameter_group_name = var.create_db_param ? aws_db_parameter_group.db_param[0].name : null
+  db_subnet_group_name = var.create_subnet_grp ? aws_db_subnet_group.db_subnet_group[count.index].name : null
+  db_parameter_group_name = var.create_db_param ? aws_db_parameter_group.db_param[count.index].name : null
   
 
   apply_immediately = var.apply_immediately
@@ -163,7 +163,7 @@ resource "aws_db_option_group" "db_opt_grp" {
 resource "aws_db_instance_automated_backups_replication" "this" {
   count = var.create_auto_backups ? 1 : 0
 
-  source_db_instance_arn = can(regex("aurora","${var.engine}")) ? aws_rds_cluster_instance.app_rds_instance[0].arn : aws_db_instance.this[0].arn
+  source_db_instance_arn = can(regex("aurora","${var.engine}")) ? aws_rds_cluster_instance.app_rds_instance[count.index].arn : aws_db_instance.this[count.index].arn
   kms_key_id             = var.kms_key_arn
   pre_signed_url         = var.pre_signed_url
   retention_period       = var.retention_period
@@ -201,9 +201,9 @@ resource "aws_db_instance" "this" {
   custom_iam_instance_profile         = var.custom_iam_instance_profile
 
   vpc_security_group_ids = var.vpc_security_group_ids
-  db_subnet_group_name   = var.create_subnet_grp ? aws_db_subnet_group.db_subnet_group[0].name : null
-  parameter_group_name   = var.create_db_param ? aws_db_parameter_group.db_param[0].name : null
-  option_group_name      = var.create_db_option ? aws_db_option_group.db_opt_grp[0].name : null
+  db_subnet_group_name   = var.create_subnet_grp ? aws_db_subnet_group.db_subnet_group[count.index].name : null
+  parameter_group_name   = var.create_db_param ? aws_db_parameter_group.db_param[count.index].name : null
+  option_group_name      = var.create_db_option ? aws_db_option_group.db_opt_grp[count.index].name : null
   network_type           = var.network_type
 
   availability_zone   = var.availability_zone
