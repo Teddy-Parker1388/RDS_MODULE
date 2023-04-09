@@ -61,7 +61,7 @@ resource "aws_rds_cluster_instance" "app_rds_instance" {
   engine         = var.engine
   engine_version = var.engine_version
 
-  instance_class          = var.db_instance_type
+  instance_class          = var.instance_class
   db_subnet_group_name    = var.create_subnet_grp ? aws_db_subnet_group.db_subnet_group[0].name : var.db_subnet_group_name
   db_parameter_group_name = var.create_db_param ? aws_db_parameter_group.db_param[0].name : null
 
@@ -92,8 +92,6 @@ resource "aws_db_instance" "app_rds_instance" {
   username                            = var.master_username
   password                            = var.master_password
   port                                = var.port
-  domain                              = var.domain
-  domain_iam_role_name                = var.domain_iam_role_name
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
   custom_iam_instance_profile         = var.custom_iam_instance_profile
 
