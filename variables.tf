@@ -209,29 +209,12 @@ variable "license_model" {
   default     = null
 }
 
-variable "db_name" {
-  description = "The DB name to create. If omitted, no database is created initially"
-  type        = string
-  default     = null
-}
-
 variable "port" {
   description = "The port on which the DB accepts connections"
   type        = string
   default     = null
 }
 
-variable "domain" {
-  description = "The ID of the Directory Service Active Directory domain to create the instance in"
-  type        = string
-  default     = null
-}
-
-variable "domain_iam_role_name" {
-  description = "(Required if domain is provided) The name of the IAM role to be used when making API calls to the Directory Service"
-  type        = string
-  default     = null
-}
 
 variable "iam_database_authentication_enabled" {
   description = "Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled"
@@ -284,11 +267,7 @@ variable "publicly_accessible" {
   default     = false
 }
 
-variable "ca_cert_identifier" {
-  description = "Specifies the identifier of the CA certificate for the DB instance"
-  type        = string
-  default     = null
-}
+
 
 variable "allow_major_version_upgrade" {
   description = "Indicates that major version upgrades are allowed. Changing this parameter does not result in an outage and the change is asynchronously applied as soon as possible"
@@ -454,85 +433,11 @@ variable "identifier" {
 }
 
 
-
-
-
-
-variable "rds_sec_grp_name" {
-  description = "Name of EFS Security Group"
-  type = string
-  default = null
-}
-
-variable "rds_sec_grp_desc" {
-  description = "Description of EFS Security Group"
-  type = string
-  default = null
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-variable "source_db_instance_arn" {
-  description = "The ARN of the source DB instance for the replicated automated backups"
-  type        = string
-  default     = null
-}
-
-
-
-
-
-
-
-/*
-variable "options" {
-  type = map(object({
-    name     = string
-    settings = map(string)
-  }))
-}
-*/
-
-variable "create" {
-  description = "Whether to create this resource or not?"
+variable "copy_tags_to_snapshot" {
+  description = "On delete, copy all Instance tags to the final snapshot"
   type        = bool
-  default     = true
+  default     = false
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 variable "replica_mode" {
@@ -553,76 +458,6 @@ variable "replica_mode" {
 
 
 
-variable "username" {
-  description = "Username for the master DB user"
-  type        = string
-  default     = null
-}
-
-variable "password" {
-  description = "Password for the master DB user. Note that this may show up in logs, and it will be stored in the state file"
-  type        = string
-  default     = null
-}
-
-
-
-
-
-
-variable "copy_tags_to_snapshot" {
-  description = "On delete, copy all Instance tags to the final snapshot"
-  type        = bool
-  default     = false
-}
-
-
-
-variable "parameter_group_name" {
-  description = "Name of the DB parameter group to associate"
-  type        = string
-  default     = null
-}
-
-
-
-
-
-
-
-
-
-
-
-variable "monitoring_role_name" {
-  description = "Name of the IAM role which will be created when create_monitoring_role is enabled."
-  type        = string
-  default     = "rds-monitoring-role"
-}
-
-variable "monitoring_role_use_name_prefix" {
-  description = "Determines whether to use `monitoring_role_name` as is or create a unique identifier beginning with `monitoring_role_name` as the specified prefix"
-  type        = bool
-  default     = false
-}
-
-variable "monitoring_role_description" {
-  description = "Description of the monitoring IAM role"
-  type        = string
-  default     = null
-}
-
-variable "monitoring_role_permissions_boundary" {
-  description = "ARN of the policy that is used to set the permissions boundary for the monitoring IAM role"
-  type        = string
-  default     = null
-}
-
-variable "create_monitoring_role" {
-  description = "Create IAM role with a defined name that permits RDS to send enhanced monitoring metrics to CloudWatch Logs."
-  type        = bool
-  default     = false
-}
 
 
 
