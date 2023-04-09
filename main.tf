@@ -1,4 +1,3 @@
-
 locals{
   environment_type = var.app_env == "prod" ? "prod" : "non-prod"
 }
