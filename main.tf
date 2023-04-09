@@ -1,5 +1,6 @@
-provider "aws" {
-  profile = "personal"
+
+locals{
+  environment_type = var.app_env == "prod" ? "prod" : "non-prod"
 }
 
 
@@ -11,11 +12,10 @@ data "aws_subnets" "db_tier" {
   }
 
   tags = {
-    Name = "*-${var.env_type}-db-tier*"
+    Name = "*-${local.environment_type}-db-tier*"
   }
 
 }
-
 
 resource "aws_db_subnet_group" "db_subnet_group" {
   count      = var.create_subnet_grp ? 1 : 0
