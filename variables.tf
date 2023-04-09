@@ -13,6 +13,7 @@ variable "vpc_id" {
 variable "env_type" {
   description = "Environment type"
   type        = string
+  default = var.app_env == "prod" ? "prod" : "non-prod"
 }
 
 variable "create_subnet_grp" {
