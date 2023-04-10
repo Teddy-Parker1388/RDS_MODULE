@@ -82,7 +82,8 @@
 |identifier|The name of the RDS instance|string|null|no|
 |copy_tags_to_snapshot|On delete, copy all Instance tags to the final snapshot|bool|false|no|
 |replica_mode|Specifies whether the replica is in either mounted or open-read-only mode|string|null|no|
-
+|db_parameter_group_name_prefix|Specifies name prefix to be assigned to DB parameter Group if create_db_param = true and use_db_name_prefix = true|string|null|no|
+|use_db_param_name_prefix|Determines whether to use `name` as is or create a unique name beginning with `name` as the specified prefix|bool|false|no|
 
 -----------------------------------------------------
 ## Outputs Supported
