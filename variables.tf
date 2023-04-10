@@ -3,11 +3,6 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "env_type" {
-  description = "Environment type"
-  type        = string
-
-}
 
 variable "create_subnet_grp" {
   description = "Specifies whether to create subnet group"
@@ -445,6 +440,12 @@ variable "create_rds_cluster" {
   description = "Specifies whether to create Aurora RDS cluster"
   type        = bool
   default     = false
+}
+
+variable "availability zones" {
+  description = "List of EC2 Availability Zones for the DB cluster storage where DB cluster instances can be created"
+  type = list(string)
+  default = []
 }
 
 
