@@ -98,7 +98,7 @@ variable "db_parameter_group_description" {
   default     = null
 }
 
-variable "db_subnet_group_description"{
+variable "db_subnet_group_description" {
   description = "Description of Subnet Group"
   type        = string
   default     = null
@@ -421,20 +421,20 @@ variable "db_parameter_group_name_ref" {
 
 variable "use_db_parameter_group_name_prefix" {
   description = "Specifies whether to create a unique db parameter group name beginning with the specified prefix."
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 variable "use_db_option_group_name_prefix" {
   description = "Specifies whether to create a unique db option group name beginning with the specified prefix."
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 variable "use_subnet_group_name_prefix" {
   description = "Specifies whether to create a unique subnet group name beginning with the specified prefix."
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 
@@ -484,8 +484,8 @@ variable "create_rds_cluster" {
 
 variable "availability_zones" {
   description = "List of EC2 Availability Zones for the DB cluster storage where DB cluster instances can be created"
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 
