@@ -442,7 +442,7 @@ variable "create_rds_cluster" {
   default     = false
 }
 
-variable "availability zones" {
+variable "availability_zones" {
   description = "List of EC2 Availability Zones for the DB cluster storage where DB cluster instances can be created"
   type = list(string)
   default = []
