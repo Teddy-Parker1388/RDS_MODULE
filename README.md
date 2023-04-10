@@ -12,7 +12,6 @@
 ## Inputs Supported
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|----------|
-|rds_sec_grp_ids|IDs for Security Groups to attach to DB|list(string)|[]|no|
 |vpc_id|VPC ID|string| | yes|
 |env_type|Deployment Environment Type (prod/non-prod)|string| |yes|
 |create_subnet_grp|Specifies whether to create a Subnet Group|bool|false|no|
@@ -84,6 +83,7 @@
 |replica_mode|Specifies whether the replica is in either mounted or open-read-only mode|string|null|no|
 |db_parameter_group_name_prefix|Specifies name prefix to be assigned to DB parameter Group if create_db_param = true and use_db_name_prefix = true|string|null|no|
 |use_db_param_name_prefix|Determines whether to use `name` as is or create a unique name beginning with `name` as the specified prefix|bool|false|no|
+|availability_zones|List of EC2 Availability Zones for the DB cluster storage where DB cluster instances can be created|list(string)|[]|no|
 
 -----------------------------------------------------
 ## Outputs Supported

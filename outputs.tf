@@ -1,16 +1,16 @@
 output "aurora_db_hostname" {
   description = "The Aurora database endpoint"
-  value       = try(aws_rds_cluster.db_cluster[0].endpoint, "")
+  value       = try(aws_rds_cluster_instance.app_rds_instance[0].endpoint, "")
 }
 
 output "aurora_db_name" {
   description = "The Aurora  database name"
-  value       = try(aws_rds_cluster.db_cluster[0].database_name, "")
+  value       = try(aws_rds_cluster.app_rds_cluster[0].database_name, "")
 }
 
 output "aurora_db_port" {
   description = "The Aurora MySQL port"
-  value       = try(aws_rds_cluster.db_cluster[0].port, "")
+  value       = try(aws_rds_cluster_instance.app_rds_instance[0].port, "")
 }
 
 

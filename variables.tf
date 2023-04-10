@@ -1,10 +1,3 @@
-variable "rds_sec_grp_ids" {
-  description = "IDs for Security Groups to attach to DB"
-  type        = list(string)
-  default     = []
-}
-
-
 variable "vpc_id" {
   description = "VPC ID"
   type        = string
@@ -13,7 +6,7 @@ variable "vpc_id" {
 variable "env_type" {
   description = "Environment type"
   type        = string
-  
+
 }
 
 variable "create_subnet_grp" {
@@ -44,7 +37,7 @@ variable "all_tags" {
 variable "engine" {
   description = "The database engine to use"
   type        = string
-  
+
 }
 
 variable "database_name" {
@@ -447,6 +440,12 @@ variable "replica_mode" {
   default     = null
 }
 
+
+variable "create_rds_cluster" {
+  description = "Specifies whether to create Aurora RDS cluster"
+  type        = bool
+  default     = false
+}
 
 
 
