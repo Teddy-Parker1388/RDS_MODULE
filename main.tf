@@ -63,7 +63,7 @@ resource "aws_db_parameter_group" "db_param" {
 
 resource "aws_db_option_group" "db_opt_grp" {
 
-  count = can(regex("aurora", "${var.engine}")) == false && var.create_db_option ? 1 : 0
+  count =  var.create_db_option ? 1 : 0
 
   name                     = var.db_option_group_name
   engine_name              = var.engine
