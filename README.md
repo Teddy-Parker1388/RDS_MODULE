@@ -84,6 +84,10 @@
 |db_parameter_group_name_prefix|Specifies name prefix to be assigned to DB parameter Group if create_db_param = true and use_db_name_prefix = true|string|null|no|
 |use_db_param_name_prefix|Determines whether to use `name` as is or create a unique name beginning with `name` as the specified prefix|bool|false|no|
 |availability_zones|List of EC2 Availability Zones for the DB cluster storage where DB cluster instances can be created|list(string)|[]|no|
+|use_parameter_group_name_prefix|Specifies whether to create a unique db parameter group name beginning with the specified prefix|bool|false|no|
+|use_option_group_name_prefix|Specifies whether to create a unique db option group name beginning with the specified prefix|bool|false|no|
+|use_subnet_group_name_prefix|Specifies whether to create a unique subnet group name beginning with the specified prefix|bool|false|no|
+
 
 -----------------------------------------------------
 ## Outputs Supported

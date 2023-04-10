@@ -92,19 +92,39 @@ variable "params" {
   default     = []
 }
 
-variable "db_param_description" {
+variable "db_parameter_group_description" {
   description = "Description of DB Parameter Group"
   type        = string
   default     = null
 }
 
+variable "db_subnet_group_description"{
+  description = "Description of Subnet Group"
+  type        = string
+  default     = null
+}
 
-variable "db_param_name_prefix" {
-  description = "Name of DB Parameter Group"
+
+variable "db_parameter_group_name_prefix" {
+  description = "Prefix for DB Parameter Group name"
   type        = string
   default     = null
 
 }
+variable "db_option_group_name_prefix" {
+  description = "Prefix for  Option Group name"
+  type        = string
+  default     = null
+
+}
+
+variable "db_subnet_group_name_prefix" {
+  description = "Prefix for  Subnet Group name"
+  type        = string
+  default     = null
+
+}
+
 
 variable "family" {
   description = "DB Family"
@@ -120,7 +140,7 @@ variable "create_db_option" {
 }
 
 
-variable "option_group_description" {
+variable "db_option_group_description" {
   description = "Option Group Description"
   type        = string
   default     = null
@@ -399,6 +419,26 @@ variable "db_parameter_group_name_ref" {
   default     = null
 }
 
+variable "use_db_parameter_group_name_prefix" {
+  description = "Specifies whether to create a unique db parameter group name beginning with the specified prefix."
+  type = bool
+  default = false
+}
+
+variable "use_db_option_group_name_prefix" {
+  description = "Specifies whether to create a unique db option group name beginning with the specified prefix."
+  type = bool
+  default = false
+}
+
+variable "use_subnet_group_name_prefix" {
+  description = "Specifies whether to create a unique subnet group name beginning with the specified prefix."
+  type = bool
+  default = false
+}
+
+
+
 
 
 variable "identifier_prefix" {
@@ -447,6 +487,8 @@ variable "availability_zones" {
   type = list(string)
   default = []
 }
+
+
 
 
 
