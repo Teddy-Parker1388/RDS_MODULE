@@ -156,8 +156,6 @@ resource "aws_db_option_group" "db_opt_grp" {
 resource "aws_db_instance" "app_rds_instance" {
   count = var.create_rds_cluster ? 0 : 1
 
-  #count = can(regex("aurora", "${var.engine}")) == false ? 1 : 0
-
   identifier        = local.instance_identifier
   identifier_prefix = local.instance_idenitifier_prefix
 
