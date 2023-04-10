@@ -4,7 +4,7 @@ locals {
   instance_idenitifier_prefix = var.use_identifier_prefix ? var.identifier_prefix : null
   subnet_group                = var.create_subnet_grp ? aws_db_subnet_group.db_subnet_group[0].name : var.db_subnet_group_name_ref
   parameter_group             = var.create_db_param ? aws_db_parameter_group.db_param[0].name : var.db_parameter_group_name_ref
-  option_group                = var.create_db_option ? aws_db_option_group.db_opt_grp[0].id : var.db_option_group_name_ref
+  option_group                = var.create_db_option ? aws_db_option_group.db_opt_grp[0].name : var.db_option_group_name_ref
 
  
 }
