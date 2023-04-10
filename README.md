@@ -1,4 +1,4 @@
-# Terrfaform Module to create RDS on AWS
+# Terrfaform Module to create RDS DB Instance and RDS Aurora Cluster on AWS
 ----------------------------------------------------
 
 ## Resources Supported
