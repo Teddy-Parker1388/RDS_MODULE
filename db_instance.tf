@@ -1,7 +1,7 @@
 #CREATE A DB INSTANCE WHEN DATABASE ENGINE IS NOT AURORA
 
 resource "aws_db_instance" "app_rds_instance" {
-  count = local.create_rds_cluster == 0 ? 1 : 0
+  count = var.create_rds_cluster ?  0 : 1
 
   #count = can(regex("aurora", "${var.engine}")) == false ? 1 : 0
 
