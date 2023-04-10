@@ -1,6 +1,6 @@
 #CREATE RDS CLUSTER AND INSTANCE WHEN DATABASE  IS AURORA/ RDS CLUSTER IS PREFERRED
 resource "aws_rds_cluster" "app_rds_cluster" {
-  count = local.create_rds_cluster
+  count = var.create_rds_cluster ? 1 : 0
 
   database_name             = var.database_name
   master_username           = var.master_username
@@ -21,7 +21,7 @@ resource "aws_rds_cluster" "app_rds_cluster" {
 
 
 resource "aws_rds_cluster_instance" "app_rds_instance" {
-  count = local.create_rds_cluster
+  count = var.create_rds_cluster ? 1 : 0
 
   identifier                   = local.instance_identifier
   identifier_prefix            = local.instance_idenitifier_prefix
