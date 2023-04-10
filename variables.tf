@@ -14,7 +14,7 @@ variable "create_subnet_grp" {
 variable "id_prefix" {
   description = "Prefix for cluster identifier and subnet group"
   type        = string
-  default     = null
+  default     = ""
 }
 
 variable "app_env" {
