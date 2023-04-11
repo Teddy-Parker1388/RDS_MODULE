@@ -119,7 +119,7 @@ resource "aws_db_instance" "app_rds_instance" {
   port                                = var.port
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
   custom_iam_instance_profile         = var.custom_iam_instance_profile
-  vpc_security_group_ids              = var.create_security_group ? tolist(aws_security_group.rds_sec_group[0].id) : var.vpc_security_group_ids
+  vpc_security_group_ids              = var.create_security_group ? [aws_security_group.rds_sec_group[0].id] : var.vpc_security_group_ids
   db_subnet_group_name                = local.subnet_group
   parameter_group_name                = local.subnet_group
   option_group_name                   = local.option_group
