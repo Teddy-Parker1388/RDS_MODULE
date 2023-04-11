@@ -8,6 +8,8 @@
 * DB Paramater Group
 * DB Subnet Group
 * DB Option Group
+* Automated Backups Replication
+* Security Group
 -----------------------------------------------------
 ## Inputs Supported
 | Name | Description | Type | Default | Required |
