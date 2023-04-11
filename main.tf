@@ -1,3 +1,7 @@
+provider "aws"{
+  profile = "personal"
+}
+
 locals {
   environment_type            = var.app_env == "prod" ? "prod" : "non-prod"
   instance_identifier         = var.use_identifier_prefix ? null : var.identifier
@@ -9,51 +13,52 @@ locals {
 
 }
 
-
+###########################################################################################
+# QUERY SUBNET DATA
+###########################################################################################
 
 data "aws_subnets" "db_tier" {
-
+  count = !var.provide_subnets ? 1 : 0
   filter {
     name   = "vpc-id"
     values = [var.vpc_id]
   }
 
-  tags = {
-    Name = "*-${local.environment_type}-db-tier*"
-  }
+  tags  = var.subnet_query_tag
+  
 
 }
 
-#####################
-#CREATE SUBNET GROUP#
-#####################
+###########################################################################################
+# CREATE SUBNET GROUP
+###########################################################################################
 resource "aws_db_subnet_group" "db_subnet_group" {
   count = var.create_subnet_grp ? 1 : 0
 
   description = var.db_subnet_group_description
   name        = var.use_subnet_group_name_prefix ? null : var.db_subnet_group_name
-  name_prefix = var.use_subnet_group_name_prefix ? var.db_subnet_group_name : null
-  subnet_ids  = data.aws_subnets.db_tier.ids
+  name_prefix = var.use_subnet_group_name_prefix ? var.db_subnet_group_name_prefix : null
+  subnet_ids  = var.provide_subnets ? var.subnet_ids : data.aws_subnets.db_tier[0].ids
 
   tags = var.all_tags
 }
 
 
 
-########################################################################
-#CREATE RDS CLUSTER  WHEN DATABASE  IS AURORA OR RDS CLUSTER IS PREFERRED#
-########################################################################
+###########################################################################################
+# CREATE RDS CLUSTER  WHEN DATABASE  IS AURORA OR RDS CLUSTER IS PREFERRED
+###########################################################################################
 resource "aws_rds_cluster" "app_rds_cluster" {
   count = var.create_rds_cluster ? 1 : 0
 
   database_name             = var.database_name
   master_username           = var.master_username
   master_password           = var.master_password
-  cluster_identifier        = "${var.id_prefix}-rds-cluster-${var.app_env}"
+  cluster_identifier        = var.rds_cluster_identifier
   backup_retention_period   = var.retention_period
   final_snapshot_identifier = var.final_snapshot_identifier
   allocated_storage         = var.allocated_storage
-  vpc_security_group_ids    = var.vpc_security_group_ids
+  vpc_security_group_ids    = var.create_security_group ? tolist(aws_security_group.rds_sec_group[0].id) : var.vpc_security_group_ids
   skip_final_snapshot       = var.skip_final_snapshot
   deletion_protection       = var.deletion_protection
   port                      = var.port
@@ -63,9 +68,9 @@ resource "aws_rds_cluster" "app_rds_cluster" {
   tags = var.all_tags
 }
 
-#################################################################################
-#CREATE RDS CLUSTER INSTANCE WHEN DATABASE  IS AURORA OR RDS CLUSTER IS PREFERRED#
-#################################################################################
+###########################################################################################
+# CREATE RDS CLUSTER INSTANCE WHEN DATABASE  IS AURORA OR RDS CLUSTER IS PREFERRED
+###########################################################################################
 resource "aws_rds_cluster_instance" "app_rds_instance" {
   count = var.create_rds_cluster ? 1 : 0
 
@@ -91,68 +96,9 @@ resource "aws_rds_cluster_instance" "app_rds_instance" {
   tags = var.all_tags
 }
 
-
-############################################################################
-#CREATE DB PARAMETER GROUP FOR BOTH AURORA AND NON-AURORA DATABASE ENGINES##
-############################################################################
-resource "aws_db_parameter_group" "db_param" {
-  count = var.create_db_param ? 1 : 0
-
-  name        = var.use_db_parameter_group_name_prefix ? null : var.db_parameter_group_name
-  name_prefix = var.use_db_parameter_group_name_prefix ? var.db_parameter_group_name_prefix : null
-  description = var.db_parameter_group_description
-  family      = var.family
-
-  dynamic "parameter" {
-    for_each = var.params
-    content {
-      name         = parameter.value.name
-      value        = parameter.value.value
-      apply_method = lookup(parameter.value, "apply_method", null)
-    }
-  }
-
-  tags = var.all_tags
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-#########################################################
-#CREATE DB OPTION GROUP FOR  NON-AURORA DATABASE ENGINES#
-#########################################################
-resource "aws_db_option_group" "db_opt_grp" {
-
-  count = var.create_db_option ? 1 : 0
-
-  name                     = var.use_db_option_group_name_prefix ? null : var.db_option_group_name
-  name_prefix              = var.use_db_option_group_name_prefix ? var.db_option_group_name_prefix : null
-  engine_name              = var.engine
-  major_engine_version     = var.engine_version
-  option_group_description = var.db_option_group_description
-
-  dynamic "option" {
-    for_each = var.options
-
-    content {
-      option_name = option.value["name"]
-
-      dynamic "option_settings" {
-        for_each = option.value["settings"]
-
-        content {
-          name  = option_settings.value["name"]
-          value = option_settings.value["value"]
-        }
-      }
-    }
-  }
-}
-
-##########################################################
-#CREATE A DB INSTANCE WHEN DATABASE ENGINE IS NOT AURORA##
-##########################################################
+###########################################################################################
+# CREATE A DB INSTANCE WHEN DATABASE ENGINE IS NOT AURORA
+###########################################################################################
 resource "aws_db_instance" "app_rds_instance" {
   count = var.create_rds_cluster ? 0 : 1
 
@@ -173,7 +119,7 @@ resource "aws_db_instance" "app_rds_instance" {
   port                                = var.port
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
   custom_iam_instance_profile         = var.custom_iam_instance_profile
-  vpc_security_group_ids              = var.vpc_security_group_ids
+  vpc_security_group_ids              = var.create_security_group ? tolist(aws_security_group.rds_sec_group[0].id) : var.vpc_security_group_ids
   db_subnet_group_name                = local.subnet_group
   parameter_group_name                = local.subnet_group
   option_group_name                   = local.option_group
@@ -208,17 +154,108 @@ resource "aws_db_instance" "app_rds_instance" {
 
 }
 
-################################################################
-#CREATE BACKUPS REPLICAS FOR BOTH AURORA AND NON-AURORA ENGINES#
-################################################################
+
+###########################################################################################
+# CREATE DB PARAMETER GROUP FOR BOTH AURORA AND NON-AURORA DATABASE ENGINES
+###########################################################################################
+resource "aws_db_parameter_group" "db_param" {
+  count = var.create_db_param ? 1 : 0
+
+  name        = var.use_db_parameter_group_name_prefix ? null : var.db_parameter_group_name
+  name_prefix = var.use_db_parameter_group_name_prefix ? var.db_parameter_group_name_prefix : null
+  description = var.db_parameter_group_description
+  family      = var.family
+
+  dynamic "parameter" {
+    for_each = var.params
+    content {
+      name         = parameter.value.name
+      value        = parameter.value.value
+      apply_method = lookup(parameter.value, "apply_method", null)
+    }
+  }
+
+  tags = var.all_tags
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+###########################################################################################
+# CREATE DB OPTION GROUP FOR  NON-AURORA DATABASE ENGINES
+###########################################################################################
+resource "aws_db_option_group" "db_opt_grp" {
+
+  count = var.create_db_option ? 1 : 0
+
+  name                     = var.use_db_option_group_name_prefix ? null : var.db_option_group_name
+  name_prefix              = var.use_db_option_group_name_prefix ? var.db_option_group_name_prefix : null
+  engine_name              = var.engine
+  major_engine_version     = var.engine_version
+  option_group_description = var.db_option_group_description
+
+  dynamic "option" {
+    for_each = var.options
+
+    content {
+      option_name = option.value["name"]
+
+      dynamic "option_settings" {
+        for_each = option.value["settings"]
+
+        content {
+          name  = option_settings.value["name"]
+          value = option_settings.value["value"]
+        }
+      }
+    }
+  }
+}
+
+
+
+###########################################################################################
+# CREATE BACKUPS REPLICAS FOR BOTH AURORA AND NON-AURORA ENGINES
+###########################################################################################
 resource "aws_db_instance_automated_backups_replication" "app_auto_backups" {
   count = var.create_auto_backups ? 1 : 0
 
-  source_db_instance_arn = can(regex("aurora", "${var.engine}")) ? aws_rds_cluster_instance.app_rds_instance[0].arn : aws_db_instance.app_rds_instance[0].arn
+  source_db_instance_arn = var.create_rds_cluster ? aws_rds_cluster_instance.app_rds_instance[0].arn : aws_db_instance.app_rds_instance[0].arn
   kms_key_id             = var.kms_key_arn
   pre_signed_url         = var.pre_signed_url
   retention_period       = var.retention_period
 
+}
+
+###########################################################################################
+# CREATE SECURITY GROUP TO ATTACH TO DATABASE
+###########################################################################################
+resource "aws_security_group" "rds_sec_group" {
+  count = var.create_security_group ? 1 : 0
+  name        = var.rds_sec_grp_name
+  description = var.rds_sec_grp_desc
+  vpc_id      = var.vpc_id
+
+  dynamic "ingress" {
+    for_each = var.rds_ingress
+    content {
+      from_port   = ingress.value.port
+      to_port     = ingress.value.port
+      protocol    = ingress.value.protocol
+      cidr_blocks = ingress.value.cidr
+    }
+  }
+
+  dynamic "egress" {
+    for_each = var.rds_egress
+    content {
+      from_port   = egress.value.port
+      to_port     = egress.value.port
+      protocol    = egress.value.protocol
+      cidr_blocks = egress.value.cidr
+    }
+  }
 }
 
 

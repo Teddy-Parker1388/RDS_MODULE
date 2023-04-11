@@ -1,14 +1,9 @@
+##########################################
+# DB INSTANCE ; RDS CLUSTER & INSTANCE
+##########################################
 variable "vpc_id" {
   description = "VPC ID"
   type        = string
-}
-
-
-variable "create_subnet_grp" {
-  description = "Specifies whether to create subnet group"
-  type        = bool
-  default     = false
-
 }
 
 variable "id_prefix" {
@@ -65,15 +60,6 @@ variable "engine_version" {
   default     = null
 }
 
-variable "create_db_param" {
-
-  description = "Specifies whether to create DB Parameter Group"
-  type        = bool
-  default     = false
-
-}
-
-
 variable "apply_immediately" {
   description = "Specifies whether any database modifications are applied immediately, or during the next maintenance window"
   type        = bool
@@ -84,102 +70,6 @@ variable "deletion_protection" {
   description = "The database can't be deleted when this value is set to true."
   type        = bool
   default     = false
-}
-
-variable "params" {
-  description = "DB Parameters"
-  type        = list(map(string))
-  default     = []
-}
-
-variable "db_parameter_group_description" {
-  description = "Description of DB Parameter Group"
-  type        = string
-  default     = null
-}
-
-variable "db_subnet_group_description" {
-  description = "Description of Subnet Group"
-  type        = string
-  default     = null
-}
-
-
-variable "db_parameter_group_name_prefix" {
-  description = "Prefix for DB Parameter Group name"
-  type        = string
-  default     = null
-
-}
-variable "db_option_group_name_prefix" {
-  description = "Prefix for  Option Group name"
-  type        = string
-  default     = null
-
-}
-
-variable "db_subnet_group_name_prefix" {
-  description = "Prefix for  Subnet Group name"
-  type        = string
-  default     = null
-
-}
-
-
-variable "family" {
-  description = "DB Family"
-  type        = string
-  default     = null
-}
-
-variable "create_db_option" {
-
-  description = "Specifies whether to create DB Option Group"
-  type        = bool
-  default     = false
-}
-
-
-variable "db_option_group_description" {
-  description = "Option Group Description"
-  type        = string
-  default     = null
-}
-
-variable "options" {
-  description = "TO_DO"
-  type = list(map(object({
-    name = string
-    settings = object({
-      name  = string
-      value = string
-    })
-  })))
-  default = []
-}
-
-variable "create_auto_backups" {
-  description = "Specifies whether to create Automated Backups Replication"
-  type        = bool
-  default     = false
-}
-
-variable "kms_key_arn" {
-  description = "The KMS encryption key ARN in the destination AWS Region"
-  type        = string
-  default     = null
-}
-
-variable "pre_signed_url" {
-  description = "A URL that contains a Signature Version 4 signed request for the StartDBInstanceAutomatedBackupsReplication action to be called in the AWS Region of the source DB instance"
-  type        = string
-  default     = null
-}
-
-variable "retention_period" {
-  description = "The retention period for the replicated automated backups"
-  type        = number
-  default     = 7
 }
 
 variable "instance_class" {
@@ -224,7 +114,6 @@ variable "port" {
   default     = null
 }
 
-
 variable "iam_database_authentication_enabled" {
   description = "Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled"
   type        = bool
@@ -261,9 +150,6 @@ variable "multi_az" {
   type        = bool
   default     = false
 }
-
-
-
 variable "storage_throughput" {
   description = "Storage throughput value for the DB instance. This setting applies only to the `gp3` storage type. See `notes` for limitations regarding this variable for `gp3`"
   type        = number
@@ -275,8 +161,6 @@ variable "publicly_accessible" {
   type        = bool
   default     = false
 }
-
-
 
 variable "allow_major_version_upgrade" {
   description = "Indicates that major version upgrades are allowed. Changing this parameter does not result in an outage and the change is asynchronously applied as soon as possible"
@@ -381,25 +265,97 @@ variable "backup_retention_period" {
   default     = null
 }
 
+variable "identifier_prefix" {
+  description = "Prefix to use for the DB instance identifier"
+  type        = string
+  default     = ""
+}
+
+variable "use_identifier_prefix" {
+  description = "Determines whether to use `identifier` as is or create a unique identifier beginning with `identifier` as the specified prefix"
+  type        = bool
+  default     = false
+}
+
+variable "identifier" {
+  description = "The name of the RDS instance"
+  type        = string
+  default     = null
+}
+
+variable "copy_tags_to_snapshot" {
+  description = "On delete, copy all Instance tags to the final snapshot"
+  type        = bool
+  default     = false
+}
+
+variable "replica_mode" {
+  description = "Specifies whether the replica is in either mounted or open-read-only mode. This attribute is only supported by Oracle instances. Oracle replicas operate in open-read-only mode unless otherwise specified"
+  type        = string
+  default     = null
+}
+
+variable "create_rds_cluster" {
+  description = "Specifies whether to create Aurora RDS cluster"
+  type        = bool
+  default     = false
+}
+
+variable "availability_zones" {
+  description = "List of EC2 Availability Zones for the DB cluster storage where DB cluster instances can be created"
+  type        = list(string)
+  default     = []
+}
+
+variable "rds_cluster_identifier" {
+  description = "value"
+  type = string
+  default = null
+}
+
+
+
+
+
+variable "subnet_query_tag"{
+  description = "Tags to use in aws_subnets data block"
+  type = map(string)
+  default = {}
+}
+
+##########################################
+# SUBNET GROUP
+##########################################
+variable "create_subnet_grp" {
+  description = "Specifies whether to create subnet group"
+  type        = bool
+  default     = false
+
+}
+
+variable "provide_subnets" {
+  description = "Specifies whether to use data block in module to query subnet information (true) or provide subnet information in root module (false)"
+  type = bool
+  default = false
+}
+
+variable "subnet_ids" {
+  description = "The IDs of the subnets. Required if provide_subnets = true"
+  type        = list(string)
+  default = []
+}
+
+variable "db_subnet_group_description" {
+  description = "Description of Subnet Group"
+  type        = string
+  default     = null
+}
+
 variable "db_subnet_group_name" {
   description = "Specifies name to be assigned to DB Subnet Group if create_subnet_grp = true "
   type        = string
   default     = null
 }
-
-variable "db_option_group_name" {
-  description = "Specifies name to be assigned to DB Option Group if create_db_option = true"
-  type        = string
-  default     = null
-}
-
-variable "db_parameter_group_name" {
-  description = "Specifies name to be assigned to DB Option Group if create_db_param = true"
-  type        = string
-  default     = null
-}
-
-
 
 variable "db_subnet_group_name_ref" {
   description = "Name attribute reference for DB Subnet Group resource  in root module"
@@ -407,8 +363,43 @@ variable "db_subnet_group_name_ref" {
   default     = null
 }
 
-variable "db_option_group_name_ref" {
-  description = "Name attribute reference for DB Option Group resource in root module"
+variable "use_subnet_group_name_prefix" {
+  description = "Specifies whether to create a unique subnet group name beginning with the specified prefix."
+  type        = bool
+  default     = false
+}
+
+variable "db_subnet_group_name_prefix" {
+  description = "Prefix for  Subnet Group name"
+  type        = string
+  default     = null
+
+}
+
+##########################################
+# PARAMETER GROUP
+##########################################
+variable "family" {
+  description = "DB Family"
+  type        = string
+  default     = null
+}
+
+variable "db_parameter_group_name_prefix" {
+  description = "Prefix for DB Parameter Group name"
+  type        = string
+  default     = null
+
+}
+
+variable "db_parameter_group_description" {
+  description = "Description of DB Parameter Group"
+  type        = string
+  default     = null
+}
+
+variable "db_parameter_group_name" {
+  description = "Specifies name to be assigned to DB Option Group if create_db_param = true"
   type        = string
   default     = null
 }
@@ -425,71 +416,143 @@ variable "use_db_parameter_group_name_prefix" {
   default     = false
 }
 
+variable "params" {
+  description = "DB Parameters"
+  type        = list(map(string))
+  default     = []
+}
+
+variable "create_db_param" {
+
+  description = "Specifies whether to create DB Parameter Group"
+  type        = bool
+  default     = false
+
+}
+
+##########################################
+# OPTION GROUP
+##########################################
 variable "use_db_option_group_name_prefix" {
   description = "Specifies whether to create a unique db option group name beginning with the specified prefix."
   type        = bool
   default     = false
 }
 
-variable "use_subnet_group_name_prefix" {
-  description = "Specifies whether to create a unique subnet group name beginning with the specified prefix."
-  type        = bool
-  default     = false
-}
-
-
-
-
-
-variable "identifier_prefix" {
-  description = "Prefix to use for the DB instance identifier"
-  type        = string
-  default     = ""
-}
-
-
-
-variable "use_identifier_prefix" {
-  description = "Determines whether to use `identifier` as is or create a unique identifier beginning with `identifier` as the specified prefix"
-  type        = bool
-  default     = false
-}
-
-variable "identifier" {
-  description = "The name of the RDS instance"
+variable "db_option_group_name_ref" {
+  description = "Name attribute reference for DB Option Group resource in root module"
   type        = string
   default     = null
 }
 
+variable "db_option_group_name_prefix" {
+  description = "Prefix for  Option Group name"
+  type        = string
+  default     = null
 
-variable "copy_tags_to_snapshot" {
-  description = "On delete, copy all Instance tags to the final snapshot"
-  type        = bool
-  default     = false
 }
 
-
-variable "replica_mode" {
-  description = "Specifies whether the replica is in either mounted or open-read-only mode. This attribute is only supported by Oracle instances. Oracle replicas operate in open-read-only mode unless otherwise specified"
+variable "db_option_group_name" {
+  description = "Specifies name to be assigned to DB Option Group if create_db_option = true"
   type        = string
   default     = null
 }
 
+variable "options" {
+  description = "TO_DO"
+  type = list(map(object({
+    name = string
+    settings = object({
+      name  = string
+      value = string
+    })
+  })))
+  default = []
+}
 
-variable "create_rds_cluster" {
-  description = "Specifies whether to create Aurora RDS cluster"
+variable "create_db_option" {
+
+  description = "Specifies whether to create DB Option Group"
   type        = bool
   default     = false
 }
 
-variable "availability_zones" {
-  description = "List of EC2 Availability Zones for the DB cluster storage where DB cluster instances can be created"
-  type        = list(string)
-  default     = []
+variable "db_option_group_description" {
+  description = "Option Group Description"
+  type        = string
+  default     = null
 }
 
+##########################################
+# AUTO BACKUPS
+##########################################
+variable "create_auto_backups" {
+  description = "Specifies whether to create Automated Backups Replication"
+  type        = bool
+  default     = false
+}
 
+variable "kms_key_arn" {
+  description = "The KMS encryption key ARN in the destination AWS Region"
+  type        = string
+  default     = null
+}
 
+variable "pre_signed_url" {
+  description = "A URL that contains a Signature Version 4 signed request for the StartDBInstanceAutomatedBackupsReplication action to be called in the AWS Region of the source DB instance"
+  type        = string
+  default     = null
+}
+
+variable "retention_period" {
+  description = "The retention period for the replicated automated backups"
+  type        = number
+  default     = 7
+}
+
+##########################################
+# SECURITY GROUP
+##########################################
+
+variable "create_security_group" {
+  description = "Specifies whether to create security group in child module (true) or in root module(false)"
+  type = bool
+  default = true
+}
+
+variable "rds_sec_grp_name" {
+  description = "Name of RDS Security Group"
+  type = string
+  default = null
+}
+
+variable "rds_sec_grp_desc" {
+  description = "Description of RDS Security Group"
+  type = string
+  default = null
+}
+
+variable "rds_ingress" {
+  description = "RDS Ingress Rules"
+  type = list(object({
+    port = number
+    protocol = string
+    cidr = list(string)
+  }))
+  default = []
+
+}
+
+variable "rds_egress" {
+  description = "RDS Egress Rules"
+  type = list(object({
+    port = number
+    protocol = string
+    cidr = list(string)
+  }))
+  default = []
+
+}
 
 
 
