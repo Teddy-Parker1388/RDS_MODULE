@@ -58,7 +58,7 @@ resource "aws_rds_cluster" "app_rds_cluster" {
   backup_retention_period   = var.retention_period
   final_snapshot_identifier = var.final_snapshot_identifier
   allocated_storage         = var.allocated_storage
-  vpc_security_group_ids    = var.create_security_group ? tolist(aws_security_group.rds_sec_group[0].id) : var.vpc_security_group_ids
+  vpc_security_group_ids    = var.create_security_group ? [aws_security_group.rds_sec_group[0].id] : var.vpc_security_group_ids
   skip_final_snapshot       = var.skip_final_snapshot
   deletion_protection       = var.deletion_protection
   port                      = var.port
