@@ -102,3 +102,64 @@
 
 
 # EXAMPLE
+## main.tf
+
+```
+module "rds" {
+  source  = "terraform-aws-modules/rds/aws"
+  
+  #create db instance
+  create_rds_cluster = false
+
+
+  identifier = "artifactory-${var.app_env}"
+
+  engine         = "mysql"
+  engine_version = var.engine_version
+  // TODO: Use db.r5.xlarge for PROD
+  instance_class    = "db.r5.large"
+  allocated_storage = 30
+
+  database_name     = "artdb"
+  master_username = "artifactory"
+  master_password = data.vault_generic_secret.db.data["db_password"]
+  port     = "3306"
+
+  # Times in UTC
+  maintenance_window      = "sat:04:00-sat:12:00"
+  backup_window           = "00:00-04:00"
+  backup_retention_period = 7
+
+  # Security group with rules to allow communication to the db on a specific port from only a particular SG
+  vpc_security_group_ids = [aws_security_group.artifactory_rds_sg.id]
+
+  tags = local.common_tags
+
+  # DB subnet group
+  subnet_ids = [for subnet in data.aws_subnet.db_tier : subnet.id]
+
+  # DB parameter group
+  family = var.family
+
+  storage_encrypted = true
+
+  # Database Deletion Protection
+  deletion_protection = false
+
+  create_db_option_group = false
+
+  create_db_parameter_group = true
+
+  # db parameter group
+  db_parameter_group_name_prefix            = "artifactory-${var.app_env}-${replace(var.family, ".", "-")}"
+  use_db_parameter_group_name_prefix = true
+
+}
+
+
+
+
+
+
+
+```
