@@ -106,17 +106,16 @@
 
 ```
 module "rds" {
-  source  = "terraform-aws-modules/rds/aws"
+  source  = var.source
   
   #create db instance
   create_rds_cluster = false
 
 
-  identifier = "artifactory-${var.app_env}"
+  identifier = "example-identifier"
 
   engine         = "mysql"
   engine_version = var.engine_version
-  // TODO: Use db.r5.xlarge for PROD
   instance_class    = "db.r5.large"
   allocated_storage = 30
 
@@ -124,6 +123,7 @@ module "rds" {
   master_username = "artifactory"
   master_password = data.vault_generic_secret.db.data["db_password"]
   port     = "3306"
+  storage_encrypted = true
 
   # Times in UTC
   maintenance_window      = "sat:04:00-sat:12:00"
@@ -136,30 +136,43 @@ module "rds" {
   tags = local.common_tags
 
   # DB subnet group
+  create_subnet_grp = true
+  
+  #Query subnet ids
+  provide_subnets = false
   subnet_ids = [for subnet in data.aws_subnet.db_tier : subnet.id]
+  subnet_query_tag = { Name = "*-prod-db-tier*" }
 
   # DB parameter group
+  create_db_param = true
   family = var.family
+  db_parameter_group_name_prefix            = "example-prefix"
+  use_db_parameter_group_name_prefix = true
 
-  storage_encrypted = true
+
+ 
 
   # Database Deletion Protection
   deletion_protection = false
+  
+  create_db_option = false
+  create_auto_backups = false
+  
 
-  create_db_option_group = false
+  
 
-  create_db_parameter_group = true
-
-  # db parameter group
-  db_parameter_group_name_prefix            = "artifactory-${var.app_env}-${replace(var.family, ".", "-")}"
-  use_db_parameter_group_name_prefix = true
-
+  
 }
 
 
+```
 
 
+##outputs.tf
 
-
+```
+output "db_instance_hostname" {
+value = module.rds.db_instance_hostname
+}
 
 ```
