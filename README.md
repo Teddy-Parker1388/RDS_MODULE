@@ -131,7 +131,7 @@ module "rds" {
   backup_retention_period = 7
 
   # Security group with rules to allow communication to the db on a specific port from only a particular SG
-  vpc_security_group_ids = [aws_security_group.artifactory_rds_sg.id]
+  vpc_security_group_ids = [aws_security_group.example_sg.id]
 
   tags = local.common_tags
 
@@ -146,7 +146,7 @@ module "rds" {
   # DB parameter group
   create_db_param = true
   family = var.family
-  db_parameter_group_name_prefix            = "example-prefix"
+  db_parameter_group_name_prefix  = "example-prefix"
   use_db_parameter_group_name_prefix = true
 
 
